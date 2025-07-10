@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Cargos e Funções</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            margin: 0.25rem;
+            background-color: var(--light-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .nav-tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .section-header {
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .function-list {
+            list-style-type: none;
+        }
+        
+        .function-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .function-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .function-name {
+            font-weight: 500;
+        }
+        
+        .approval-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .option-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .option-tag.comite {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .option-tag.area-meio {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .option-tag.gerente {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        
+        .option-tag.gti {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .option-tag.dicom {
+            background-color: #e0f7fa;
+            color: #00838f;
+        }
+        
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .search-input {
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .function-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .approval-options {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Catálogo de Cargos e Funções</h1>
+        <p>Selecione um cargo para visualizar suas funções e opções de aprovação</p>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Pesquisar cargo ou função..." id="searchInput">
+        </div>
+        
+        <div class="nav-tabs" id="navTabs">
+            <!-- Tabs will be inserted here by JavaScript -->
+        </div>
+        
+        <div id="sectionsContainer">
+            <!-- Sections will be inserted here by JavaScript -->
+        </div>
+    </div>
+    
+    <script>
+        // Data structure representing the spreadsheet
+        const positionsData = [
+            {
+                title: "OPERACIONAL I",
+                functions: [
+                    { name: "ACUPUNTURISTA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ATENDENTE DE SAUDE BUCAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ATENDENTE", options: ["Comitê gestor", "GNE"] },
+                    { name: "AUXILIAR DE CONFEITEIRO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "AUXILIAR DE COZINHEIRO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "AUXILIAR DE MANUTENCAO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "AUXILIAR OPERACIONAL", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "AUXILIAR PADEIRO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "CAIXA", options: ["Comitê gestor", "FINANCEIRO"] },
+                    { name: "CAMAREIRO(A)", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "COMPETIDOR NACIONAL", options: ["Comitê gestor", "CPE"] },
+                    { name: "COPEIRO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "CUMIM", options: ["Comitê gestor", "CPE"] },
+                    { name: "MASSOTERAPEUTA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "MENSAGEIRO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "OPERADOR DE TELEMARKETING", options: ["Comitê gestor", "GNE"] },
+                    { name: "PORTEIRO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "RECREADOR", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "SALVA VIDAS", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "VIGIA", options: ["Comitê gestor", "GEINFRA"] }
+                ]
+            },
+            {
+                title: "OPERACIONAL II",
+                functions: [
+                    { name: "ALMOXARIFE", options: ["Comitê gestor", "GELOGS"] },
+                    { name: "ASSISTENTE ADMINISTRATIVO", options: ["Comitê gestor", "ÁREA MEIO ?????"] },
+                    { name: "ASSISTENTE COMERCIAL", options: ["Comitê gestor", "GNE"] },
+                    { name: "ASSISTENTE DE ATENDIMENTO", options: ["Comitê gestor", "GNE"] },
+                    { name: "ASSISTENTE DE NUTRICAO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ASSISTENTE PEDAGOGICO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "BARISTA", options: ["Comitê gestor", "CPE"] },
+                    { name: "BOMBEIRO HIDRAULICO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "CARPINTEIRO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "COMPETIDOR INTERNACIONAL", options: ["Comitê gestor", "CPE"] },
+                    { name: "COZINHEIRO I", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "ELETRICISTA", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "ESTETICISTA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "GARÇOM", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "GUIA DE TURISMO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "JARDINEIRO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "MOTORISTA", options: ["Comitê gestor", "GELOGS"] },
+                    { name: "PADEIRO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "PEDREIRO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "RECEPCIONISTA DE HOTELARIA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "SECRETARIA I", options: ["Comitê gestor"] },
+                    { name: "SECRETARIO ESCOLAR", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "TECNICO DE MANUTENCAO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "TECNICO DE SAUDE BUCAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TECNICO EM RADIOLOGIA", options: ["Comitê gestor", "Gerente de Programa"] }
+                ]
+            },
+            {
+                title: "TECNICO I",
+                functions: [
+                    { name: "ANALISTA ASSISTENCIAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ANALISTA CORPORATIVO I", options: ["Comitê gestor", "ÁREA MEIO - ADMINISTRATIVO"] },
+                    { name: "ANALISTA DE CONTABILIDADE I", options: ["Comitê gestor", "CONTABILIDADE"] },
+                    { name: "ANALISTA DE CONTROLADORIA I", options: ["Comitê gestor", "CONTROLE INTERNO"] },
+                    { name: "ANALISTA DE CULTURA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ANALISTA DE DESENVOLVIMENTO HUMANO I", options: ["GDH", "RH e REDES"] },
+                    { name: "ANALISTA DE GESTAO DE DOCUMENTOS I", options: ["CDOC"] },
+                    { name: "ANALISTA DE LICITACAO I", options: ["LICITAÇÃO"] },
+                    { name: "ANALISTA DE PATRIMONIO", options: ["PATRIMÔNIO"] },
+                    { name: "ANALISTA DE PLANEJAMENTO I", options: ["GPLAN/COMPLIANCE"] },
+                    { name: "ANALISTA FINANCEIRO I", options: ["FINANCEIRO"] },
+                    { name: "ASSISTENTE SOCIAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "BARTENDER", options: ["Comitê gestor", "CPE"] },
+                    { name: "BIBLIOTECARIO I", options: ["Comitê gestor", "Gerente de Programa/Unidades????", "Unidades"] },
+                    { name: "CHEF DE CONFEITARIA", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "CHEF DE PADARIA", options: ["Comitê gestor", "CPE"] },
+                    { name: "CONFEITEIRO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "CONSULTOR(A) DE VENDAS", options: ["GNE"] },
+                    { name: "COZINHEIRO II", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "GOVERNANTA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "PRODUTOR DE EVENTOS", options: ["EVENTOS"] },
+                    { name: "PREPARADOR FISICO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "SECRETARIA II", options: ["Comitê gestor"] },
+                    { name: "SOMMELIER", options: ["Comitê gestor", "CPE"] },
+                    { name: "SOUS CHEF DE COZINHA", options: ["Comitê gestor", "CPE"] },
+                    { name: "SUPERVISOR DE ATENDIMENTO", options: ["GNE"] },
+                    { name: "SUPERVISOR DE HOSPEDAGEM", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TECNICO AUDIOVISUAL I", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TECNICO DE PROGRAMAS I", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TECNICO DE SUPORTE", options: ["GTI"] },
+                    { name: "ANALISTA DE PROCESSOS I", options: ["GPLAN"] },
+                    { name: "EMISSOR DE PASSAGENS", options: ["Gerente de Programa"] }
+                ]
+            },
+            {
+                title: "TECNICO II",
+                functions: [
+                    { name: "ANALISTA CORPORATIVO II", options: ["Comitê gestor", "ÁREA MEIO - ADMINISTRATIVO"] },
+                    { name: "ANALISTA DE COMUNICACAO E MARKETING", options: ["DICOM"] },
+                    { name: "ANALISTA DE CONTABILIDADE II", options: ["CONTABILIDADE"] },
+                    { name: "ANALISTA DE CONTROLADORIA II", options: ["CONTROLE INTERNO"] },
+                    { name: "ANALISTA DE GESTAO DE DOCUMENTOS II", options: ["CDOC"] },
+                    { name: "ANALISTA DE LICITACAO II", options: ["LICITAÇÃO"] },
+                    { name: "ANALISTA DE PLANEJAMENTO II", options: ["GPLAN/COMPLIANCE"] },
+                    { name: "ANALISTA DE DESENVOLVIMENTO HUMANO II", options: ["GDH"] },
+                    { name: "ANALISTA DE SISTEMAS I", options: ["GTI"] },
+                    { name: "ANALISTA DE TECNOLOGIA DA INFORMACAO I", options: ["GTI"] },
+                    { name: "ANALISTA FINANCEIRO II", options: ["FINANCEIRO"] },
+                    { name: "BIBLIOTECARIO II", options: ["Comitê gestor", "Gerente de Programa/Unidades????"] },
+                    { name: "CHEF DE BAR", options: ["Comitê gestor", "Gerente de Programa/Unidades????"] },
+                    { name: "CHEF DE PRODUÇÃO", options: ["Comitê gestor", "CPE"] },
+                    { name: "COMPRADOR", options: ["COMPRAS"] },
+                    { name: "DESIGNER GRAFICO", options: ["DICOM"] },
+                    { name: "EDUCADOR AMBIENTAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "FISIOTERAPEUTA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "FONAUDIOLOGO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "GOVERNANTA EXECUTIVA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "INTERPRETE DE LIBRAS", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "JORNALISTA", options: ["DICOM"] },
+                    { name: "MOTORISTA EXECUTIVO", options: ["GELOGS"] },
+                    { name: "NUTRICIONISTA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ORIENTADOR SOCIO EDUCACIONAL", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "PSICOLOGO(A)", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "PSICOPEDAGOGO", options: ["Comitê gestor", "Gerente de Programa/CPE"] },
+                    { name: "REDATOR", options: ["DICOM"] },
+                    { name: "SECRETARIA III", options: ["Comitê gestor", "DIRETORIAS?????"] },
+                    { name: "SUPERVISOR DE EVENTOS", options: ["EVENTOS"] },
+                    { name: "SUPERVISOR DE FROTA", options: ["GELOGS"] },
+                    { name: "SUPERVISOR DE MANUTENCAO", options: ["Comitê gestor", "GEINFRA"] },
+                    { name: "SUPERVISOR (A) DE PROGRAMAS I / SUPERVISOR DE PROGRAMAS I", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TECNICO DE AUDIOVISUAL II", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TECNICO DE EDIFICACOES", options: ["GEINFRA"] },
+                    { name: "TECNICO DE SEGURANCA DO TRABALHO", options: ["SESMT"] },
+                    { name: "TERAPEUTA OCUPACIONAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "TURISMOLOGO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "ANALISTA DE ENDOMARKETING", options: ["DICOM"] },
+                    { name: "ANALISTA DE PROCESSOS II", options: ["GPLAN"] },
+                    { name: "CHEFE DE FILA", options: ["Comitê gestor", "CPE"] }
+                ]
+            },
+            {
+                title: "TECNICO III",
+                functions: [
+                    { name: "ANALISTA CORPORATIVO III", options: ["Comitê gestor", "ÁREA MEIO - ADMINISTRATIVO"] },
+                    { name: "ANALISTA DE CONTABILIDADE III", options: ["CONTABILIDADE"] },
+                    { name: "ANALISTA DE CONTROLADORIA III", options: ["CONTABILIDADE"] },
+                    { name: "ANALISTA DE DESENVOLVIMENTO HUMANO III", options: ["GDH"] },
+                    { name: "ANALISTA DE GESTAO DE DOCUMENTOS III", options: ["CDOC"] },
+                    { name: "ANALISTA DE LICITACAO III", options: ["LICITAÇÃO"] },
+                    { name: "ANALISTA DE PLANEJAMENTO III", options: ["GPLAN/COMPLIANCE"] },
+                    { name: "ANALISTA DE SISTEMAS II", options: ["GTI"] },
+                    { name: "ANALISTA DE TECNOLOGIA DA INFORMACAO II", options: ["GTI"] },
+                    { name: "ANALISTA FINANCEIRO III", options: ["FINANCEIRO"] },
+                    { name: "ANALISTA DE PUBLICIDADE E PROPAGANDA III", options: ["DICOM"] },
+                    { name: "ANALISTA DE MÍDIAS DIGITAIS", options: ["DICOM"] },
+                    { name: "ASSESSOR DE IMPRENSA", options: ["DICOM"] },
+                    { name: "ASSESSOR DE COMUNICACAO", options: ["DICOM"] },
+                    { name: "CHEF DE RESTAURANTE", options: ["Comitê gestor", "CPE"] },
+                    { name: "CONSULTOR TECNICO", options: ["CPE"] },
+                    { name: "MAITRE", options: ["Comitê gestor", "CPE"] },
+                    { name: "SECRETARIA EXECUTIVA", options: ["DIRETORIAS?????"] },
+                    { name: "SUPERVISOR(A) ADMINISTRATIVO", options: ["Comitê gestor", "ÁREA MEIO - ADMINISTRATIVO"] },
+                    { name: "SUPERVISOR AMBIENTAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "SUPERVISOR DE ALIMENTOS E BEBIDAS", options: ["Comitê gestor", "CPE"] },
+                    { name: "SUPERVISOR DE ALMOXARIFADO", options: ["GELOGS"] },
+                    { name: "SUPERVISOR DE COMUNICACAO E MARKETING", options: ["DICOM"] },
+                    { name: "SUPERVISOR DE PROGRAMAS II", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "SUPERVISOR(A) PEDAGOGICO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "SUPERVISOR(A) DE ENDOMARKETING", options: ["DICOM"] },
+                    { name: "ANALISTA DE PROCESSOS III", options: ["GPLAN/COMPLIANCE"] },
+                    { name: "EXECUTIVO DE CONTAS", options: ["GNE"] },
+                    { name: "SUPERVISOR DE SECRETARIA (A) ACADÊMICA", options: ["CPE"] }
+                ]
+            },
+            {
+                title: "TECNICO IV / ESPECIALISTA",
+                functions: [
+                    { name: "ANALISTA DE SISTEMAS III", options: ["GTI"] },
+                    { name: "ANALISTA ADMINISTRATIVO", options: ["ÁREA MEIO - ADMINISTRATIVO"] },
+                    { name: "ANALISTA DE PROGRAMAÇÃO SOCIAL", options: ["Gerente de Programa"] },
+                    { name: "ANALISTA DE TECNOLOGIA DA INFORMACAO III", options: ["GTI"] },
+                    { name: "ANALISTA PEDAGOGICO", options: ["CPE"] },
+                    { name: "ASSESSOR JURIDICO", options: ["JURIDICO"] },
+                    { name: "GERENTE DE UNIDADE I / DIRETOR(A) ESCOLAR I", options: ["DPS/DEP"] },
+                    { name: "SECRETARIA DA PRESIDENCIA", options: ["Gabinete"] },
+                    { name: "DESIGNER SENIOR", options: ["DICOM"] },
+                    { name: "SUPERVISOR DE SISTEMAS", options: ["GTI"] },
+                    { name: "SUPERVISOR DE REDES E INFRAESTRUTURA DE TI", options: ["GTI"] },
+                    { name: "CONSULTOR", options: ["GTI"] }
+                ]
+            },
+            {
+                title: "TECNICO V",
+                functions: [
+                    { name: "DENTISTA", options: ["Comitê gestor", "Gerente de Programa"] }
+                ]
+            },
+            {
+                title: "PROFESSOR (REF. 220H/A)* **",
+                functions: [
+                    { name: "PROFESSOR TECNICO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "PROFESSOR(A) DE EDUCACAO FISICA", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "PROFESSOR (A)", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "INSTRUTOR I", options: ["Comitê gestor", "CPE"] },
+                    { name: "PROFESSOR(A) ESPECIALISTA / PROFESSOR DE TEATRO", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "INSTRUTOR II", options: ["Comitê gestor", "CPE"] },
+                    { name: "COMISSIONADOS / CONFIANÇA", options: [] }
+                ]
+            },
+            {
+                title: "COORDENACAO CORPORATIVA",
+                functions: [
+                    { name: "COORDENADOR (A) CORPORATIVO", options: ["Gerência de áreas"] }
+                ]
+            },
+            {
+                title: "ESPECIALISTA II/ TATICO I",
+                functions: [
+                    { name: "ASSESSOR DE RELACOES INSTITUCIONAIS", options: [] },
+                    { name: "CHEF EXECUTIVO", options: ["Comitê gestor", "CPE"] },
+                    { name: "CONSULTOR DE PRODUTOS EDUCACIONAIS", options: ["Comitê gestor", "CPE"] },
+                    { name: "CONSULTOR DE PROGRAMAÇÃO SOCIAL", options: ["Comitê gestor", "Gerente de Programa"] },
+                    { name: "COORDENADOR DE COMUNICACAO E MARKETING", options: ["DICOM"] },
+                    { name: "COORDENADOR DE EMPRESA PEDAGOGICA", options: ["Comitê gestor", "CPE"] },
+                    { name: "COORDENADOR DE EVENTOS", options: ["EVENTOS"] },
+                    { name: "COORDENADOR JURÍDICO", options: ["JURIDICO"] },
+                    { name: "ESPECIALISTA EM BANCO DE DADOS", options: ["GTI"] },
+                    { name: "ESPECIALISTA EM BI", options: ["GTI"] },
+                    { name: "ESPECIALISTA EM SEGURANÇA DA INFORMAÇÃO", options: ["GTI"] },
+                    { name: "ESPECIALISTA EM SISTEMAS", options: ["GTI"] },
+                    { name: "GERENTE DE EDITORA", options: ["GO/GEP"] },
+                    { name: "GERENTE DE UNIDADE II / DIRETOR(A) ESCOLAR II", options: ["DPS/DEP"] },
+                    { name: "COORDENADOR DE MÍDIAS DIGITAIS", options: ["DICOM"] },
+                    { name: "COORDENADOR DE PUBLICIDADE E PROPAGANDA", options: ["DICOM"] },
+                    { name: "COORDENADOR DE IMPRENSA", options: ["DICOM"] }
+                ]
+            },
+            {
+                title: "ESPECIALISTA III/ TATICO II",
+                functions: [
+                    { name: "COORDENADOR DE INFRAESTRUTURA", options: ["GTI"] },
+                    { name: "MÉDICO", options: ["GDH/DIRETORIA"] },
+                    { name: "OUVIDOR", options: [] }
+                ]
+            },
+            {
+                title: "ESPECIALISTA IV/ TATICO III",
+                functions: [
+                    { name: "ASSESSOR DE POLITICAS ORGANIZACIONAIS", options: [] },
+                    { name: "CONSULTOR DE RELACIONAMENTO INSTITUCIONAL", options: [] },
+                    { name: "COORDENADOR MÉDICO", options: ["GDH/DIRETORIA"] },
+                    { name: "COORDENADOR DE REDES/INFRAESTRUTURA", options: ["GTI"] },
+                    { name: "COORDENADOR DE SISTEMAS", options: ["GTI"] },
+                    { name: "COORDENADOR DE TECNOLOGIA DA INFORMACAO", options: ["GTI"] },
+                    { name: "GERENTE DE EDUCACAO PROFISSIONAL", options: ["DEP"] },
+                    { name: "GERENTE DE PROGRAMAÇÃO SOCIAL", options: ["DPS"] },
+                    { name: "GERENTE DE UNIDADE III", options: ["DPS/DEP"] },
+                    { name: "GERENTE DE OPERAÇÕES", options: ["DEP"] },
+                    { name: "GERENTE REGIONAL DE UNIDADES", options: ["DPS"] }
+                ]
+            },
+            {
+                title: "GERENCIA CORPORATIVA",
+                functions: [
+                    { name: "ASSESSOR DA PRESIDENCIA", options: [] },
+                    { name: "GERENTE CORPORATIVO", options: ["DIRETORIA"] }
+                ]
+            },
+            {
+                title: "ESPECIALISTA V",
+                functions: [
+                    { name: "CONSULTOR ESPECIALISTA", options: [] },
+                    { name: "CONSULTOR JURIDICO", options: ["DA"] },
+                    { name: "DIRETOR DE FACULDADE", options: ["DEP"] },
+                    { name: "DIRETOR(A) DE COMUNICAÇÃO E MARKETING", options: ["DR"] }
+                ]
+            },
+            {
+                title: "ESTRATEGICO I",
+                functions: [
+                    { name: "DIRETOR(A) ADMINISTRATIVO", options: ["DR/SAI"] },
+                    { name: "DIRETOR(A) DE EDUCACAO PROFISSIONAL", options: ["DR"] },
+                    { name: "DIRETOR(A) DE PROGRAMACAO SOCIAL", options: ["DR"] },
+                    { name: "DIRETOR(A) FINANCEIRO", options: ["SAI"] },
+                    { name: "CHEFE DE GABINETE", options: [] },
+                    { name: "DIRETOR(A) DE OPERAÇÕES", options: ["SAI"] }
+                ]
+            },
+            {
+                title: "ESTRATEGICO II",
+                functions: [
+                    { name: "DIRETOR REGIONAL SE", options: [] },
+                    { name: "DIRETOR REGIONAL SES", options: [] },
+                    { name: "SUPERINTENDENTE DE AÇÕES INTEGRADAS", options: [] },
+                    { name: "SUPERINTENDENTE JURIDICO", options: [] }
+                ]
+            }
+        ];
+
+        // Function to create tabs and sections
+        function createTabsAndSections() {
+            const navTabs = document.getElementById('navTabs');
+            const sectionsContainer = document.getElementById('sectionsContainer');
+            
+            // Create tabs and sections
+            positionsData.forEach((position, index) => {
+                // Create tab
+                const tab = document.createElement('div');
+                tab.className = 'nav-tab';
+                if (index === 0) tab.classList.add('active');
+                tab.textContent = position.title;
+                tab.dataset.target = `section-${index}`;
+                navTabs.appendChild(tab);
+                
+                // Create section
+                const section = document.createElement('div');
+                section.className = 'section';
+                section.id = `section-${index}`;
+                if (index === 0) section.classList.add('active');
+                
+                // Section header
+                const sectionHeader = document.createElement('div');
+                sectionHeader.className = 'section-header';
+                
+                const sectionTitle = document.createElement('h2');
+                sectionTitle.className = 'section-title';
+                sectionTitle.textContent = position.title;
+                
+                sectionHeader.appendChild(sectionTitle);
+                section.appendChild(sectionHeader);
+                
+                // Function list
+                const functionList = document.createElement('ul');
+                functionList.className = 'function-list';
+                
+                position.functions.forEach(func => {
+                    const functionItem = document.createElement('li');
+                    functionItem.className = 'function-item';
+                    
+                    const functionName = document.createElement('div');
+                    functionName.className = 'function-name';
+                    functionName.textContent = func.name;
+                    
+                    const approvalOptions = document.createElement('div');
+                    approvalOptions.className = 'approval-options';
+                    
+                    func.options.forEach(option => {
+                        const optionTag = document.createElement('span');
+                        optionTag.className = 'option-tag';
+                        
+                        // Add specific class based on option content
+                        if (option.includes('Comitê')) optionTag.classList.add('comite');
+                        else if (option.includes('ÁREA MEIO')) optionTag.classList.add('area-meio');
+                        else if (option.includes('Gerente')) optionTag.classList.add('gerente');
+                        else if (option.includes('GTI')) optionTag.classList.add('gti');
+                        else if (option.includes('DICOM')) optionTag.classList.add('dicom');
+                        
+                        optionTag.textContent = option;
+                        approvalOptions.appendChild(optionTag);
+                    });
+                    
+                    functionItem.appendChild(functionName);
+                    functionItem.appendChild(approvalOptions);
+                    functionList.appendChild(functionItem);
+                });
+                
+                section.appendChild(functionList);
+                sectionsContainer.appendChild(section);
+            });
+            
+            // Add click event to tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and sections
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding section
+                    this.classList.add('active');
+                    const targetSection = document.getElementById(this.dataset.target);
+                    targetSection.classList.add('active');
+                });
+            });
+        }
+        
+        // Function to handle search
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                // If search is empty, show all sections and functions
+                document.querySelectorAll('.section').forEach(section => {
+                    section.style.display = 'block';
+                    section.querySelectorAll('.function-item').forEach(item => {
+                        item.style.display = 'flex';
+                    });
+                });
+                return;
+            }
+            
+            // Hide all functions and sections initially
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+                section.querySelectorAll('.function-item').forEach(item => {
+                    item.style.display = 'none';
+                });
+            });
+            
+            // Show matching functions and their sections
+            positionsData.forEach((position, index) => {
+                const section = document.getElementById(`section-${index}`);
+                let hasMatches = false;
+                
+                position.functions.forEach((func, funcIndex) => {
+                    const functionName = func.name.toLowerCase();
+                    const functionItem = section.querySelectorAll('.function-item')[funcIndex];
+                    
+                    if (functionName.includes(searchTerm)) {
+                        functionItem.style.display = 'flex';
+                        hasMatches = true;
+                    }
+                });
+                
+                if (hasMatches) {
+                    section.style.display = 'block';
+                }
+            });
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            createTabsAndSections();
+            
+            // Add event listener for search
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+        });
+    </script>
+</body>
+</html>
